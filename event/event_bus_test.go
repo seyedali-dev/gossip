@@ -1,3 +1,6 @@
+// Copyright (c) 2025 SeyedAli
+// Licensed under the MIT License. See LICENSE file in the project root for details.
+
 // Package event_test. event_bus_test provides comprehensive tests for the event bus implementation
 package event_test
 

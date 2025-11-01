@@ -1,3 +1,6 @@
+// Copyright (c) 2025 SeyedAli
+// Licensed under the MIT License. See LICENSE file in the project root for details.
+
 // Package event. event_types provides a strongly-typed event bus system for decoupling core logic from side effects.
 package event
 
