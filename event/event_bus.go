@@ -7,6 +7,7 @@ package event
 import (
 	"context"
 	"fmt"
+	"log"
 	"sync"
 )
 
@@ -109,9 +110,11 @@ func (eb *EventBus) Publish(event *Event) {
 	case eb.eventChan <- event:
 
 	case <-eb.ctx.Done():
+		log.Printf("Cannot publish event %s: bus is shutting down", event.Type)
 
 	default:
 		// Event channel full, dropping event
+		log.Printf("Event channel full, dropping event: %s", event.Type)
 	}
 }
 
@@ -138,9 +141,13 @@ func (eb *EventBus) PublishSync(ctx context.Context, event *Event) []error {
 
 // Shutdown gracefully stops the event bus and waits for all workers to finish.
 func (eb *EventBus) Shutdown() {
+	log.Println("Shutting down event bus...")
+
 	eb.cancel()
 	close(eb.eventChan)
 	eb.wg.Wait()
+
+	log.Println("Event bus shutdown complete")
 }
 
 // -------------------------------------------- Private Helper Functions --------------------------------------------
@@ -149,23 +156,25 @@ func (eb *EventBus) Shutdown() {
 func (eb *EventBus) start() {
 	for i := 0; i < eb.workers; i++ {
 		eb.wg.Add(1)
-		go eb.worker()
+		go eb.worker(i)
 	}
 }
 
 // worker processes events from the channel.
-func (eb *EventBus) worker() {
+func (eb *EventBus) worker(id int) {
 	defer eb.wg.Done()
 
 	for {
 		select {
 		case event, ok := <-eb.eventChan:
 			if !ok {
+				log.Printf("Worker %d stopped", id)
 				return // Worker stopped
 			}
 			eb.dispatch(event)
 
 		case <-eb.ctx.Done():
+			log.Printf("Worker %d shutting down", id)
 			return // Worker shutting down
 		}
 	}
@@ -182,6 +191,8 @@ func (eb *EventBus) dispatch(event *Event) {
 	}
 
 	for _, sub := range handlers {
-		_ = sub.Handler(eb.ctx, event)
+		if err := sub.Handler(eb.ctx, event); err != nil {
+			log.Printf("[EventBus] Handler %s failed: %v", sub.ID, err)
+		}
 	}
 }
