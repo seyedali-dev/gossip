@@ -110,7 +110,7 @@ Create a dedicated file for event types:
 // events/types.go
 package events
 
-import "github.com/seyedali-dev/gossip"
+import gossip "github.com/seyedali-dev/gossip/event"
 
 const (
     // User events
