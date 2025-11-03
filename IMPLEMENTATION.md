@@ -1714,18 +1714,3 @@ func TestBus(t *testing.T) {
     assert.True(t, called)
 }
 ```
-
----
-
-## That's It, Bro!
-
-You now understand:
-- **Why** event-driven architecture exists
-- **How** every piece of this library works
-- **What** design decisions were made and why
-- **How** to extend it
-
-Go build something awesome with it! And when someone asks, "Why did you use a channel here?", you'll say, "For async processing and buffering, duh!" 😎
-
-Any questions? I'm here for you! 🤝
-
