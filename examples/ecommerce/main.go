@@ -1,3 +1,6 @@
+// Copyright (c) 2025 SeyedAli
+// Licensed under the MIT License. See LICENSE file in the project root for details.
+
 // Package main. main demonstrates e-commerce order processing with event-driven batch processing.
 package main
 

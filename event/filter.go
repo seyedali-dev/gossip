@@ -1,3 +1,6 @@
+// Copyright (c) 2025 SeyedAli
+// Licensed under the MIT License. See LICENSE file in the project root for details.
+
 // Package event. filter provides event filtering capabilities for conditional handler execution.
 package event
 

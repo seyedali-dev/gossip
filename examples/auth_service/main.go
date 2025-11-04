@@ -1,3 +1,6 @@
+// Copyright (c) 2025 SeyedAli
+// Licensed under the MIT License. See LICENSE file in the project root for details.
+
 // Package main. main demonstrates authentication service with event-driven architecture.
 package main
 
