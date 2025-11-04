@@ -14,6 +14,9 @@ var (
 // -------------------------------------------- Public Functions --------------------------------------------
 
 // GetGlobalBus returns the singleton event bus instance.
+// On the first call, it initializes the bus with the DefaultConfig configuration
+// if it hasn't been initialized by InitGlobalBus already.
+// Subsequent calls will return the same instance.
 func GetGlobalBus() *EventBus {
 	once.Do(func() {
 		globalBus = NewEventBus(DefaultConfig())
@@ -21,7 +24,10 @@ func GetGlobalBus() *EventBus {
 	return globalBus
 }
 
-// InitGlobalBus initializes the global event bus with custom configuration.
+// InitGlobalBus initializes the global event bus with a custom configuration.
+// IMPORTANT: This function should be called once at the start of your application,
+// before any goroutines that might call GetGlobalBus are started.
+// It has no effect if the global bus has already been initialized (e.g., by a call to GetGlobalBus).
 func InitGlobalBus(cfg *Config) {
 	once.Do(func() {
 		globalBus = NewEventBus(cfg)
