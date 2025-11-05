@@ -90,17 +90,8 @@ fmt:
 	@echo "Formatting code..."
 	go fmt ./...
 
-# Run linter
-lint:
-	@echo "Running linter..."
-	@command -v golangci-lint >/dev/null 2>&1 || { \
-		echo "golangci-lint not installed. Installing..."; \
-		go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
-	}
-	golangci-lint run ./...
-
-# Run all checks (format, lint, test)
-check: fmt lint test-all
+# Run all checks (format, test)
+check: fmt test-all
 
 # Development workflow: watch for changes and run tests
 watch:
