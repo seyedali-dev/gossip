@@ -29,14 +29,20 @@ func SeedEventLogTable(ctx context.Context, db *sql.DB) error {
 			event_type VARCHAR(255) NOT NULL,
 			payload JSONB,
 			metadata JSONB,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			INDEX idx_event_type (event_type),
-			INDEX idx_created_at (created_at)
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		)
 	`
 
 	if _, err := db.ExecContext(ctx, query); err != nil {
 		return fmt.Errorf("failed to create event_log table: %w", err)
+	}
+
+	if _, err := db.ExecContext(ctx, "CREATE INDEX IF NOT EXISTS idx_event_type ON event_log (event_type)"); err != nil {
+		return fmt.Errorf("failed to create index on event_log: %w", err)
+	}
+
+	if _, err := db.ExecContext(ctx, "CREATE INDEX IF NOT EXISTS idx_created_at ON event_log (created_at)"); err != nil {
+		return fmt.Errorf("failed to create index on event_log: %w", err)
 	}
 
 	return nil
@@ -49,14 +55,20 @@ func SeedUserEventsTable(ctx context.Context, db *sql.DB) error {
 			id SERIAL PRIMARY KEY,
 			user_id VARCHAR(255) NOT NULL,
 			event_type VARCHAR(255) NOT NULL,
-			occurred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			INDEX idx_user_id (user_id),
-			INDEX idx_event_type (event_type)
+			occurred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		)
 	`
 
 	if _, err := db.ExecContext(ctx, query); err != nil {
 		return fmt.Errorf("failed to create user_events table: %w", err)
+	}
+
+	if _, err := db.ExecContext(ctx, "CREATE INDEX IF NOT EXISTS idx_user_id ON user_events (user_id)"); err != nil {
+		return fmt.Errorf("failed to create index on user_events: %w", err)
+	}
+
+	if _, err := db.ExecContext(ctx, "CREATE INDEX IF NOT EXISTS idx_event_type ON user_events (event_type)"); err != nil {
+		return fmt.Errorf("failed to create index on user_events: %w", err)
 	}
 
 	return nil
