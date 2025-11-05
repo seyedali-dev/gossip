@@ -6,6 +6,7 @@ package event_test
 import (
 	"context"
 	"errors"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -354,17 +355,22 @@ func TestMiddleware_MultipleHandlersWithDifferentMiddleware(t *testing.T) {
 	bus := event.NewEventBus(event.DefaultConfig())
 	defer bus.Shutdown()
 
+	var mu sync.Mutex
 	handler1Called := false
 	handler2Called := false
 
 	// Handler 1 with retry
 	handler1 := event.WithRetry(2, 10*time.Millisecond)(func(ctx context.Context, e *event.Event) error {
+		mu.Lock()
+		defer mu.Unlock()
 		handler1Called = true
 		return nil
 	})
 
 	// Handler 2 with timeout
 	handler2 := event.WithTimeout(100 * time.Millisecond)(func(ctx context.Context, e *event.Event) error {
+		mu.Lock()
+		defer mu.Unlock()
 		handler2Called = true
 		return nil
 	})
@@ -375,6 +381,8 @@ func TestMiddleware_MultipleHandlersWithDifferentMiddleware(t *testing.T) {
 	bus.Publish(event.NewEvent("test.event", nil))
 	time.Sleep(100 * time.Millisecond)
 
+	mu.Lock()
+	defer mu.Unlock()
 	assert.True(t, handler1Called)
 	assert.True(t, handler2Called)
 }

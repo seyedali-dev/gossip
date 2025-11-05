@@ -179,8 +179,11 @@ func TestEventBus_EventMetadata(t *testing.T) {
 	bus := event.NewEventBus(event.DefaultConfig())
 	defer bus.Shutdown()
 
+	var mu sync.Mutex
 	receivedMetadata := make(map[string]interface{})
 	handler := func(ctx context.Context, event *event.Event) error {
+		mu.Lock()
+		defer mu.Unlock()
 		for k, v := range event.Metadata {
 			receivedMetadata[k] = v
 		}
@@ -196,6 +199,8 @@ func TestEventBus_EventMetadata(t *testing.T) {
 	bus.Publish(event)
 	time.Sleep(100 * time.Millisecond)
 
+	mu.Lock()
+	defer mu.Unlock()
 	if receivedMetadata["request_id"] != "12345" {
 		t.Error("Metadata was not properly passed to handler")
 	}
