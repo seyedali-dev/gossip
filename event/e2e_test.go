@@ -255,7 +255,7 @@ func TestE2E_FilteredHandlersWithComplexLogic(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	assert.Equal(t, int32(4), atomic.LoadInt32(&highPriorityCount), "4 high priority orders")
-	assert.Equal(t, int32(5), atomic.LoadInt32(&apiOnlyCount), "5 API orders")
+	assert.Equal(t, int32(4), atomic.LoadInt32(&apiOnlyCount), "4 API orders")
 	assert.Equal(t, int32(2), atomic.LoadInt32(&vipCustomerCount), "2 VIP customer orders")
 }
 

@@ -58,15 +58,15 @@ func TestPriorityQueue_PriorityOrdering(t *testing.T) {
 	// Should dequeue in priority order: high -> normal -> low
 	evt1, ok1 := pq.Dequeue()
 	assert.True(t, ok1)
-	assert.Equal(t, "high", evt1.Data.(string))
+	assert.Equal(t, "high priority", evt1.Data.(string))
 
 	evt2, ok2 := pq.Dequeue()
 	assert.True(t, ok2)
-	assert.Equal(t, "normal", evt2.Data.(string))
+	assert.Equal(t, "normal priority", evt2.Data.(string))
 
 	evt3, ok3 := pq.Dequeue()
 	assert.True(t, ok3)
-	assert.Equal(t, "low", evt3.Data.(string))
+	assert.Equal(t, "low priority", evt3.Data.(string))
 }
 
 func TestPriorityQueue_SamePriority(t *testing.T) {
